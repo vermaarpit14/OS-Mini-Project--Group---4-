@@ -3,7 +3,6 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    
     <title>OS Mini Project</title>
     <link rel="icon" type="image/x-icon" href="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSCLWuH31-gHwUEjRozs3y-jfNwjsTmnvAXRQ&s">
 
@@ -14,7 +13,7 @@
         theme: {
           extend: {
             fontFamily: {
-              sans: ['Inter', 'sans-serif'],
+              sans: ['Space Grotesk', 'sans-serif'],
               mono: ['JetBrains Mono', 'monospace'],
             }
           }
@@ -22,118 +21,496 @@
       }
     </script>
 
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <!-- Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+
+    <!-- AOS & Notyf CSS -->
     <link rel="stylesheet" href="https://unpkg.com/aos@next/dist/aos.css" />
-    
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/notyf@3/notyf.min.css">
+
     <style>
-      /* Smooth transitions */
-      * { transition: background-color 0.3s ease, border-color 0.3s ease, color 0.3s ease; }
+      /* =============================================
+         CUSTOM CURSOR SYSTEM
+      ============================================= */
+      * { cursor: none !important; }
       
-      /* Sleek Scrollbar */
-      ::-webkit-scrollbar { width: 6px; height: 6px; }
-      ::-webkit-scrollbar-track { background: transparent; }
-      ::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.3); border-radius: 10px; }
-      ::-webkit-scrollbar-thumb:hover { background: rgba(255,255,255,0.5); }
-
-      #particles-js {
-        position: absolute; width: 100%; height: 100%; top: 0; left: 0; z-index: -1;
+      #cursor-blob {
+        position: fixed; top: 0; left: 0; width: 18px; height: 18px;
+        background: rgba(255,255,255,0.9); border-radius: 50%;
+        pointer-events: none; z-index: 99999;
+        transform: translate(-50%, -50%);
+        transition: width 0.2s ease, height 0.2s ease, background 0.2s ease, opacity 0.2s ease;
+        mix-blend-mode: difference;
       }
-      
-      /* --- Gradients --- */
+      #cursor-ring {
+        position: fixed; top: 0; left: 0; width: 44px; height: 44px;
+        border: 1px solid rgba(255,255,255,0.4); border-radius: 50%;
+        pointer-events: none; z-index: 99998;
+        transform: translate(-50%, -50%);
+        transition: width 0.4s cubic-bezier(0.23,1,0.32,1), height 0.4s cubic-bezier(0.23,1,0.32,1), border-color 0.3s ease, opacity 0.3s ease;
+      }
+      #cursor-label {
+        position: fixed; top: 0; left: 0; pointer-events: none; z-index: 99997;
+        font-family: 'Space Grotesk', sans-serif; font-size: 10px; font-weight: 600;
+        letter-spacing: 0.12em; text-transform: uppercase; color: rgba(255,255,255,0.9);
+        transform: translate(16px, -50%); opacity: 0; transition: opacity 0.2s ease;
+        white-space: nowrap; mix-blend-mode: difference;
+      }
+      body.cursor-hover #cursor-blob { width: 10px; height: 10px; }
+      body.cursor-hover #cursor-ring { width: 60px; height: 60px; border-color: rgba(255,255,255,0.6); }
+      body.cursor-hover #cursor-label { opacity: 1; }
+
+      @media (max-width: 768px) {
+        * { cursor: auto !important; }
+        #cursor-blob, #cursor-ring, #cursor-label { display: none; }
+      }
+
+      /* =============================================
+         GRAIN TEXTURE OVERLAY
+      ============================================= */
+      body::before {
+        content: ''; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+        opacity: 0.035; pointer-events: none; z-index: 1;
+        background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 512 512' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E");
+        background-repeat: repeat; background-size: 200px 200px;
+      }
+
+      /* =============================================
+         DYNAMIC SPOTLIGHT
+      ============================================= */
+      #spotlight {
+        position: fixed; width: 600px; height: 600px; border-radius: 50%;
+        background: radial-gradient(circle, rgba(255,255,255,0.06) 0%, transparent 70%);
+        pointer-events: none; z-index: 0; transform: translate(-50%, -50%);
+        transition: opacity 1s ease;
+      }
+
+      /* =============================================
+         BACKGROUNDS
+      ============================================= */
       body {
-        /* Light Gradient */
-        background: linear-gradient(359.3deg, rgb(196, 214, 252) 1%, rgba(187, 187, 187, 0) 70.9%);
-        background-attachment: fixed;
-        background-size: cover;
+        background: linear-gradient(359.3deg, rgb(196, 214, 252) 1%, rgba(187,187,187,0) 70.9%);
+        background-attachment: fixed; background-size: cover;
       }
-      
       html.dark body {
-        /* Dark Gradient */
-        background: linear-gradient(179.2deg, rgb(34, 34, 34) 0%, rgb(8, 0, 153) 29.7%, rgb(118, 6, 166) 63.4%, rgba(233, 0, 64, 0.58) 100.1%);
-        background-attachment: fixed;
-        background-size: cover;
+        background: linear-gradient(179.2deg, rgb(34,34,34) 0%, rgb(8,0,153) 29.7%, rgb(118,6,166) 63.4%, rgba(233,0,64,0.58) 100.1%);
+        background-attachment: fixed; background-size: cover;
       }
 
-      /* --- Glass UI --- */
+      /* =============================================
+         PARTICLES
+      ============================================= */
+      #particles-js {
+        position: fixed; width: 100%; height: 100%; top: 0; left: 0; z-index: 0;
+        pointer-events: none;
+      }
+
+      /* =============================================
+         SCROLLBAR
+      ============================================= */
+      ::-webkit-scrollbar { width: 4px; height: 4px; }
+      ::-webkit-scrollbar-track { background: transparent; }
+      ::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.15); border-radius: 99px; }
+      ::-webkit-scrollbar-thumb:hover { background: rgba(255,255,255,0.35); }
+
+      /* =============================================
+         GLASSMORPHISM CARDS
+      ============================================= */
       .glass-card {
-        background: rgba(255, 255, 255, 0.15);
-        backdrop-filter: blur(16px);
-        -webkit-backdrop-filter: blur(16px);
-        border: 1px solid rgba(255, 255, 255, 0.3);
-        box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
+        background: rgba(255,255,255,0.12);
+        backdrop-filter: blur(24px) saturate(180%);
+        -webkit-backdrop-filter: blur(24px) saturate(180%);
+        border: 1px solid rgba(255,255,255,0.35);
+        box-shadow: 0 8px 32px rgba(0,0,0,0.06), inset 0 1px 0 rgba(255,255,255,0.3);
+        transform-style: preserve-3d;
+        will-change: transform;
+      }
+      html.dark .glass-card {
+        background: rgba(0,0,0,0.3);
+        border: 1px solid rgba(255,255,255,0.09);
+        box-shadow: 0 8px 40px rgba(0,0,0,0.35), inset 0 1px 0 rgba(255,255,255,0.06);
       }
 
-      html.dark .glass-card {
-        background: rgba(0, 0, 0, 0.25);
-        border: 1px solid rgba(255, 255, 255, 0.15);
-        box-shadow: 0 4px 30px rgba(0, 0, 0, 0.4);
+      .focus-glow { transition: box-shadow 0.4s ease, border-color 0.4s ease; }
+      .focus-glow:focus-within {
+        border-color: rgba(255,255,255,0.55);
+        box-shadow: 0 0 0 1px rgba(255,255,255,0.15), 0 0 30px rgba(255,255,255,0.1);
+      }
+      html.dark .focus-glow:focus-within {
+        border-color: rgba(255,255,255,0.25);
+        box-shadow: 0 0 0 1px rgba(255,255,255,0.06), 0 0 35px rgba(255,255,255,0.05);
+      }
+
+      /* =============================================
+         HEADER ENTRANCE + FLOATING
+      ============================================= */
+      @keyframes headerFloat {
+        0%, 100% { transform: translateY(0px); }
+        50% { transform: translateY(-3px); }
+      }
+      .header-float { animation: headerFloat 6s ease-in-out infinite; }
+
+      /* =============================================
+         BUTTON MICROINTERACTIONS
+      ============================================= */
+      .btn-premium {
+        position: relative; overflow: hidden;
+        transition: transform 0.2s cubic-bezier(0.34,1.56,0.64,1), box-shadow 0.3s ease, background 0.3s ease !important;
+      }
+      .btn-premium:hover { transform: translateY(-1px); box-shadow: 0 4px 16px rgba(0,0,0,0.15); }
+      .btn-premium:active { transform: scale(0.96) !important; }
+      .btn-premium::after {
+        content: ''; position: absolute; inset: 0; background: rgba(255,255,255,0);
+        transition: background 0.3s ease;
+      }
+      .btn-premium:hover::after { background: rgba(255,255,255,0.06); }
+
+      /* Ripple on click */
+      .ripple {
+        position: absolute; border-radius: 50%;
+        background: rgba(255,255,255,0.3);
+        transform: scale(0); animation: ripple-anim 0.5s ease-out;
+        pointer-events: none;
+      }
+      @keyframes ripple-anim {
+        to { transform: scale(3); opacity: 0; }
+      }
+
+      /* =============================================
+         EXECUTE BUTTON — GLOW PULSE
+      ============================================= */
+      .btn-execute {
+        background: linear-gradient(135deg, rgba(255,255,255,0.22), rgba(255,255,255,0.08)) !important;
+        border: 1px solid rgba(255,255,255,0.3) !important;
+        transition: all 0.3s cubic-bezier(0.34,1.56,0.64,1) !important;
+        position: relative; overflow: hidden;
+      }
+      .btn-execute:hover {
+        transform: translateY(-2px) scale(1.03) !important;
+        box-shadow: 0 6px 24px rgba(255,255,255,0.15), 0 0 0 1px rgba(255,255,255,0.2) !important;
+        background: linear-gradient(135deg, rgba(255,255,255,0.32), rgba(255,255,255,0.14)) !important;
+      }
+      .btn-execute:active { transform: scale(0.95) !important; }
+      .btn-execute.running {
+        animation: executeGlow 1.2s ease-in-out infinite;
+      }
+      @keyframes executeGlow {
+        0%, 100% { box-shadow: 0 0 0 0 rgba(255,255,255,0.2); }
+        50% { box-shadow: 0 0 20px 4px rgba(255,255,255,0.1); }
+      }
+
+      /* =============================================
+         TERMINAL
+      ============================================= */
+      #terminal {
+        line-height: 1.7;
+        background: transparent;
+      }
+      .terminal-line { 
+        display: block; opacity: 0;
+        animation: terminalReveal 0.3s ease forwards;
+      }
+      @keyframes terminalReveal {
+        from { opacity: 0; transform: translateX(-6px); }
+        to { opacity: 1; transform: translateX(0); }
+      }
+
+      /* =============================================
+         EDITOR — ANIMATED CARET GLOW
+      ============================================= */
+      #codeInput {
+        caret-color: rgba(103, 232, 249, 0.9);
+        background: transparent;
+        color: inherit;
+        line-height: 1.75;
+        letter-spacing: 0.01em;
+      }
+      #codeInput:focus {
+        outline: none;
+      }
+
+      /* =============================================
+         TERMINAL INPUT — ANIMATED FOCUS BORDER
+      ============================================= */
+      .term-input-wrapper {
+        position: relative;
+      }
+      .term-input-wrapper::after {
+        content: ''; position: absolute; bottom: 0; left: 0;
+        height: 1px; width: 0%; background: rgba(103,232,249,0.6);
+        transition: width 0.4s cubic-bezier(0.23,1,0.32,1);
+      }
+      .term-input-wrapper:focus-within::after { width: 100%; }
+
+      /* =============================================
+         FILE UPLOAD DROP ZONE
+      ============================================= */
+      #dropzone-overlay {
+        position: fixed; inset: 0; z-index: 9999;
+        background: rgba(0,0,0,0.7);
+        backdrop-filter: blur(12px);
+        display: flex; align-items: center; justify-content: center;
+        opacity: 0; pointer-events: none;
+        transition: opacity 0.3s ease;
+      }
+      #dropzone-overlay.active { opacity: 1; pointer-events: all; }
+      .dropzone-box {
+        width: min(480px, 90vw); padding: 60px 40px;
+        border: 2px dashed rgba(255,255,255,0.3); border-radius: 24px;
+        text-align: center; color: rgba(255,255,255,0.8);
+        position: relative; overflow: hidden;
+        animation: dropzoneBreath 2s ease-in-out infinite;
+      }
+      @keyframes dropzoneBreath {
+        0%, 100% { border-color: rgba(255,255,255,0.25); box-shadow: 0 0 0 0 rgba(255,255,255,0.1); }
+        50% { border-color: rgba(255,255,255,0.5); box-shadow: 0 0 30px 4px rgba(255,255,255,0.06); }
+      }
+      .dropzone-box.drag-over {
+        border-color: rgba(103,232,249,0.7);
+        background: rgba(103,232,249,0.05);
+        box-shadow: 0 0 40px rgba(103,232,249,0.15);
+      }
+
+      /* =============================================
+         FILE NAME INDICATOR
+      ============================================= */
+      #file-indicator {
+        font-size: 11px; font-family: 'JetBrains Mono', monospace;
+        opacity: 0; max-width: 160px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+        transition: opacity 0.4s ease, transform 0.4s ease;
+        transform: translateY(4px);
+      }
+      #file-indicator.visible { opacity: 0.7; transform: translateY(0); }
+
+      /* =============================================
+         STATUS DOT PULSE
+      ============================================= */
+      @keyframes statusPulse {
+        0%, 100% { box-shadow: 0 0 0 0 rgba(52,211,153,0.6); }
+        50% { box-shadow: 0 0 0 6px rgba(52,211,153,0); }
+      }
+      .status-dot { animation: statusPulse 2s ease-in-out infinite; }
+
+      /* =============================================
+         ANIMATED DIVIDERS
+      ============================================= */
+      .divider-line {
+        height: 1px; width: 100%;
+        background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+        position: relative; overflow: hidden;
+      }
+      .divider-line::after {
+        content: ''; position: absolute; top: 0; left: -100%;
+        width: 60%; height: 100%; background: rgba(255,255,255,0.4);
+        animation: dividerShine 4s ease-in-out infinite;
+      }
+      @keyframes dividerShine {
+        to { left: 200%; }
+      }
+
+      /* =============================================
+         ENTRANCE ANIMATIONS
+      ============================================= */
+      .reveal-up {
+        opacity: 0; transform: translateY(20px);
+        animation: revealUp 0.8s cubic-bezier(0.23,1,0.32,1) forwards;
+      }
+      @keyframes revealUp {
+        to { opacity: 1; transform: translateY(0); }
+      }
+
+      /* =============================================
+         LOADING BAR (Execute progress)
+      ============================================= */
+      #progress-bar {
+        position: absolute; bottom: 0; left: 0; height: 2px; width: 0%;
+        background: linear-gradient(90deg, rgba(103,232,249,0.8), rgba(167,139,250,0.8));
+        border-radius: 0 1px 1px 0;
+        transition: width 0.3s ease;
+        opacity: 0;
+      }
+
+      /* =============================================
+         GLOBAL SMOOTH TRANSITIONS (preserved)
+      ============================================= */
+      * { transition: background-color 0.4s ease, border-color 0.4s ease, color 0.4s ease; }
+      .btn-premium, .btn-execute { transition: all 0.3s cubic-bezier(0.34,1.56,0.64,1) !important; }
+
+      /* =============================================
+         TIPPY THEME
+      ============================================= */
+      .tippy-box[data-theme~='translucent'] {
+        background: rgba(0,0,0,0.75);
+        backdrop-filter: blur(12px);
+        border: 1px solid rgba(255,255,255,0.12);
+        font-family: 'Space Grotesk', sans-serif;
+        font-size: 11px; letter-spacing: 0.04em;
+        border-radius: 8px;
+      }
+
+      /* =============================================
+         AMBIENT FLOATING SHAPES
+      ============================================= */
+      .ambient-shape {
+        position: fixed; border-radius: 50%; pointer-events: none; z-index: 0;
+        opacity: 0; animation: ambientFloat 8s ease-in-out infinite;
+        will-change: transform;
+      }
+      @keyframes ambientFloat {
+        0% { transform: translateY(0px) rotate(0deg); opacity: 0; }
+        20% { opacity: 1; }
+        80% { opacity: 0.6; }
+        100% { transform: translateY(-80px) rotate(360deg); opacity: 0; }
       }
     </style>
   </head>
-  <body class="text-zinc-900 dark:text-zinc-100 antialiased h-screen flex flex-col relative overflow-hidden transition-colors">
-    
+
+  <body class="text-zinc-900 dark:text-zinc-100 antialiased h-screen flex flex-col relative overflow-hidden">
+
+    <!-- Custom Cursor -->
+    <div id="cursor-blob"></div>
+    <div id="cursor-ring"></div>
+    <div id="cursor-label"></div>
+
+    <!-- Dynamic Spotlight -->
+    <div id="spotlight"></div>
+
+    <!-- Particles Background -->
     <div id="particles-js"></div>
 
-    <header class="glass-card mx-6 mt-6 rounded-2xl px-6 py-4 flex justify-between items-center z-10" data-aos="fade-down">
-      <div class="flex items-center gap-4">
-        <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSCLWuH31-gHwUEjRozs3y-jfNwjsTmnvAXRQ&s" alt="Logo" class="w-8 h-8 rounded-full border-2 border-white/50 shadow-lg object-cover">
-        <h1 class="text-lg font-bold tracking-widest uppercase shadow-sm"><span id="typed-title"></span></h1>
+    <!-- File Drop Zone Overlay -->
+    <div id="dropzone-overlay">
+      <div class="dropzone-box" id="dropzone-box">
+        <div style="font-size: 48px; margin-bottom: 16px; opacity: 0.5;">⬆</div>
+        <p style="font-size: 18px; font-weight: 600; margin-bottom: 8px; font-family: 'Space Grotesk', sans-serif;">Drop your file here</p>
+        <p style="font-size: 12px; opacity: 0.6; font-family: 'JetBrains Mono', monospace; letter-spacing: 0.05em;">.c .cpp .js .py .java .ts .json .txt .html .css</p>
+        <p style="font-size: 11px; opacity: 0.4; margin-top: 8px; font-family: 'Space Grotesk', sans-serif;">Max 2MB</p>
       </div>
-      
+    </div>
+
+    <!-- ===================== HEADER ===================== -->
+    <header class="glass-card header-float mx-6 mt-6 rounded-2xl px-6 py-4 flex justify-between items-center z-20 sticky top-6 reveal-up" style="animation-delay: 0.1s;">
       <div class="flex items-center gap-4">
-        <button onclick="toggleTheme()" data-tippy-content="Toggle Light/Dark Mode" class="p-2 rounded-full bg-white/20 hover:bg-white/40 dark:bg-black/30 dark:hover:bg-black/50 transition-colors backdrop-blur-md">
-          <svg id="theme-icon" class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z" /></svg>
+        <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSCLWuH31-gHwUEjRozs3y-jfNwjsTmnvAXRQ&s" alt="Logo"
+          class="w-8 h-8 rounded-full border-2 border-white/50 shadow-lg object-cover transition-transform hover:scale-110 hover:rotate-6"
+          style="transition: transform 0.4s cubic-bezier(0.34,1.56,0.64,1);">
+        <h1 class="text-sm font-bold tracking-[0.2em] uppercase"><span id="typed-title"></span></h1>
+      </div>
+
+      <div class="flex items-center gap-3">
+        <!-- Sound Toggle -->
+        <button onclick="toggleSound()" data-tippy-content="Toggle UI Sounds" data-cursor-label="Sound"
+          class="btn-premium p-2 rounded-full bg-white/20 hover:bg-white/35 dark:bg-black/30 dark:hover:bg-black/50 backdrop-blur-md border border-white/20">
+          <svg id="sound-icon" class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.536 8.464a5 5 0 010 7.072m2.828-9.9a9 9 0 010 12.728M5.586 15H4a1 1 0 01-1-1v-4a1 1 0 011-1h1.586l4.707-4.707C10.923 3.663 12 4.109 12 5v14c0 .891-1.077 1.337-1.707.707L5.586 15z" />
+          </svg>
         </button>
 
-        <div class="flex items-center gap-2 glass-card px-4 py-2 rounded-full cursor-pointer" data-tippy-content="System Status: Optimal">
-          <span class="w-2.5 h-2.5 rounded-full bg-green-400 shadow-[0_0_8px_rgba(74,222,128,0.8)] animate-pulse"></span>
-          <span class="text-xs font-bold tracking-widest uppercase">Connected</span>
+        <!-- Theme Toggle -->
+        <button onclick="toggleTheme()" data-tippy-content="Toggle Light/Dark Mode" data-cursor-label="Theme"
+          class="btn-premium p-2 rounded-full bg-white/20 hover:bg-white/35 dark:bg-black/30 dark:hover:bg-black/50 backdrop-blur-md border border-white/20">
+          <svg id="theme-icon" class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z" />
+          </svg>
+        </button>
+
+        <!-- Status Badge -->
+        <div class="flex items-center gap-2 glass-card px-4 py-2 rounded-full" data-tippy-content="System Status: Optimal">
+          <span class="status-dot w-2 h-2 rounded-full bg-emerald-400 shrink-0"></span>
+          <span class="text-[10px] font-bold tracking-[0.15em] uppercase">Connected</span>
         </div>
       </div>
     </header>
 
-    <main class="flex-1 flex flex-col lg:flex-row gap-6 p-6 min-h-0 w-full max-w-[1800px] mx-auto z-10">
-      
-      <div class="flex flex-col w-full lg:w-1/2 min-h-0" data-aos="fade-right" data-aos-delay="100">
-        <div class="glass-card rounded-2xl flex flex-col flex-1 relative overflow-hidden">
-          
-          <div class="bg-white/10 dark:bg-black/30 px-5 py-3 flex justify-between items-center border-b border-white/20 select-none">
+    <!-- ===================== MAIN ===================== -->
+    <main class="flex-1 flex flex-col lg:flex-row gap-6 p-6 min-h-0 w-full max-w-[1800px] mx-auto z-10 pb-10">
+
+      <!-- === TERMINAL PANEL === -->
+      <div class="flex flex-col w-full lg:w-1/2 min-h-0 focus-glow glass-card rounded-2xl reveal-up" style="animation-delay: 0.25s;" data-tilt data-tilt-max="1.5" data-tilt-speed="600" data-tilt-glare data-tilt-max-glare="0.05">
+        <div class="flex flex-col flex-1 relative overflow-hidden h-full">
+
+          <!-- Terminal Header -->
+          <div class="bg-white/10 dark:bg-black/30 px-5 py-3 flex justify-between items-center select-none rounded-t-2xl">
             <div class="flex gap-2 items-center">
-              <span class="ml-3 text-xs font-mono opacity-60">Live Terminal 💻</span>
+              <!-- Traffic lights -->
+              <div class="flex gap-1.5">
+                <div class="w-3 h-3 rounded-full bg-red-400/70 hover:bg-red-400 transition-colors" style="box-shadow: 0 0 6px rgba(248,113,113,0.4);"></div>
+                <div class="w-3 h-3 rounded-full bg-yellow-400/70 hover:bg-yellow-400 transition-colors" style="box-shadow: 0 0 6px rgba(250,204,21,0.4);"></div>
+                <div class="w-3 h-3 rounded-full bg-green-400/70 hover:bg-green-400 transition-colors" style="box-shadow: 0 0 6px rgba(74,222,128,0.4);"></div>
+              </div>
+              <span class="ml-3 text-[10px] font-mono font-semibold opacity-60 tracking-[0.18em] uppercase">LIVE TERMINAL</span>
             </div>
-            <button onclick="document.getElementById('terminal').innerHTML = ''" class="text-xs font-mono font-bold opacity-50 hover:opacity-100 transition-opacity uppercase tracking-widest" data-tippy-content="Clear Output">
-              Clear
+            <button onclick="clearTerminal()" data-tippy-content="Clear Output" data-cursor-label="Clear"
+              class="btn-premium text-[10px] font-mono font-bold opacity-40 hover:opacity-90 uppercase tracking-[0.15em] px-2 py-1 rounded-md hover:bg-white/10">
+              Clear ×
             </button>
           </div>
 
-          <pre id="terminal" class="flex-1 overflow-y-auto p-5 font-mono text-sm whitespace-pre-wrap leading-relaxed shadow-inner" style="text-shadow: 0 1px 2px rgba(0,0,0,0.5);"></pre>
+          <div class="divider-line"></div>
 
+          <pre id="terminal" class="flex-1 overflow-y-auto p-5 font-mono text-xs whitespace-pre-wrap leading-relaxed" style="text-shadow: 0 1px 3px rgba(0,0,0,0.4);"></pre>
         </div>
       </div>
 
-      <div class="flex flex-col w-full lg:w-1/2 min-h-0" data-aos="fade-left" data-aos-delay="150">
-        <div class="glass-card rounded-2xl flex flex-col flex-1 min-h-[400px] overflow-hidden">
-          
-          <div class="flex justify-between items-center px-5 py-3 border-b border-white/20 bg-white/10 dark:bg-black/20">
-            <h2 class="text-xs uppercase tracking-widest font-bold opacity-80">Live Editor</h2>
-            <button onclick="dispatchCode()" class="bg-white/20 hover:bg-white/40 dark:bg-white/10 dark:hover:bg-white/20 px-4 py-1.5 rounded-lg text-xs font-bold uppercase tracking-wider transition-all active:scale-95 border border-white/20" data-tippy-content="Compile & Run Payload">
-              Execute
+      <!-- === EDITOR PANEL === -->
+      <div class="flex flex-col w-full lg:w-1/2 min-h-0 focus-glow glass-card rounded-2xl reveal-up" style="animation-delay: 0.35s;" data-tilt data-tilt-max="1.5" data-tilt-speed="600" data-tilt-glare data-tilt-max-glare="0.05">
+        <div class="flex flex-col flex-1 relative overflow-hidden h-full min-h-[400px]">
+
+          <!-- Progress Bar -->
+          <div id="progress-bar"></div>
+
+          <!-- Editor Header -->
+          <div class="flex justify-between items-center px-5 py-3 bg-white/10 dark:bg-black/20 rounded-t-2xl">
+            <div class="flex items-center gap-3">
+              <span class="text-[10px] uppercase tracking-[0.18em] font-bold opacity-70">Live Editor</span>
+              <span id="file-indicator" class="text-cyan-300/70">No file loaded</span>
+            </div>
+
+            <div class="flex gap-2 items-center">
+              <input type="file" id="fileUpload" class="hidden" accept=".c,.cpp,.js,.py,.java,.ts,.json,.txt,.html,.css" onchange="handleFileUpload(event)">
+
+              <!-- Upload Button -->
+              <button onclick="document.getElementById('fileUpload').click(); playUISound('click');"
+                data-tippy-content="Upload Source File" data-cursor-label="Upload"
+                class="btn-premium flex items-center gap-1.5 bg-white/10 hover:bg-white/25 dark:bg-black/20 dark:hover:bg-black/40 px-3 py-1.5 rounded-lg text-[10px] font-bold uppercase tracking-wider border border-white/15">
+                <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12"/>
+                </svg>
+                Upload
+              </button>
+
+              <!-- Execute Button -->
+              <button id="executeBtn" onclick="dispatchCode()" data-cursor-label="Execute"
+                data-tippy-content="Compile & Run (Ctrl+Enter)"
+                class="btn-execute px-4 py-1.5 rounded-lg text-[10px] font-bold uppercase tracking-wider">
+                ▶ Execute
+              </button>
+            </div>
+          </div>
+
+          <div class="divider-line"></div>
+
+          <!-- Code Textarea -->
+          <textarea id="codeInput" spellcheck="false"
+            class="flex-1 bg-transparent w-full p-5 font-mono text-xs focus:outline-none resize-none placeholder:opacity-30 leading-relaxed"
+            placeholder="#include <stdio.h>&#10;&#10;int main() {&#10;    printf(&quot;Grid is online.\n&quot;);&#10;    return 0;&#10;}"></textarea>
+
+          <!-- Terminal Input Bar -->
+          <div class="bg-white/10 dark:bg-black/40 rounded-b-2xl px-5 py-4 flex items-center gap-3 backdrop-blur-md mt-auto term-input-wrapper border-t border-white/15">
+            <span class="font-mono text-sm font-bold text-cyan-400 select-none" style="text-shadow: 0 0 8px rgba(103,232,249,0.5);">❯</span>
+            <input type="text" id="termInput" placeholder="Enter Inputs Here..."
+              class="flex-1 bg-transparent border-none outline-none font-mono text-xs placeholder:opacity-40 caret-cyan-400" />
+            <button onclick="sendTerminalInput()" data-cursor-label="Send"
+              class="btn-premium text-[10px] font-bold uppercase tracking-[0.15em] opacity-50 hover:opacity-100 px-2 hover:text-cyan-400 transition-colors">
+              ENTER ↵
             </button>
           </div>
-          
-          <textarea id="codeInput" spellcheck="false" class="flex-1 bg-transparent w-full p-5 font-mono text-sm focus:outline-none resize-none placeholder:opacity-40" placeholder="#include <stdio.h>&#10;&#10;int main() {&#10;    printf(&quot;Grid is online.\\n&quot;);&#10;    return 0;&#10;}"></textarea>
-
-          <div class="bg-white/10 dark:bg-black/40 border-t border-white/20 px-5 py-4 flex items-center gap-3 transition-colors backdrop-blur-md mt-auto">
-            <span class="font-mono text-sm font-bold animate-pulse opacity-80">❯</span>
-            <input type="text" id="termInput" placeholder="Enter Inputs Here" class="flex-1 bg-transparent border-none outline-none font-mono text-sm placeholder:opacity-50" />
-            <button onclick="sendTerminalInput()" class="text-xs font-bold uppercase tracking-widest opacity-60 hover:opacity-100 transition-opacity px-2">ENTER ↵</button>
-          </div>
 
         </div>
       </div>
-      
     </main>
 
+    <!-- ===================== SCRIPTS ===================== -->
     <script src="/socket.io/socket.io.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/lodash@4.17.21/lodash.min.js"></script>
@@ -146,103 +523,396 @@
     <script src="https://unpkg.com/@popperjs/core@2"></script>
     <script src="https://unpkg.com/tippy.js@6"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/howler/2.2.3/howler.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/vanilla-tilt/1.8.0/vanilla-tilt.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/notyf@3/notyf.min.js"></script>
 
     <script>
-      // === Initialization & Config ===
-      AOS.init({ duration: 800, once: true });
-      
+      // =============================================
+      // INITIALIZATION
+      // =============================================
+      AOS.init({ duration: 800, once: true, easing: 'ease-out-cubic' });
+
       const socket = typeof io !== 'undefined' ? io() : { on:()=>{}, emit:()=>{}, id: 'mock-id' };
       const terminal = document.getElementById("terminal");
 
-      // Audio (Howler)
+      const notyf = new Notyf({
+        duration: 3500,
+        position: { x: 'right', y: 'bottom' },
+        ripple: true,
+        types: [
+          { type: 'success', background: 'rgba(52,211,153,0.88)', icon: false },
+          { type: 'error', background: 'rgba(248,113,113,0.88)', icon: false }
+        ]
+      });
+
+      // =============================================
+      // CUSTOM CURSOR SYSTEM
+      // =============================================
+      const blob = document.getElementById('cursor-blob');
+      const ring = document.getElementById('cursor-ring');
+      const label = document.getElementById('cursor-label');
+      let mx = -100, my = -100, rx = -100, ry = -100;
+
+      document.addEventListener('mousemove', e => { mx = e.clientX; my = e.clientY; });
+
+      // Spotlight
+      const spotlight = document.getElementById('spotlight');
+      document.addEventListener('mousemove', _.throttle(e => {
+        spotlight.style.left = e.clientX + 'px';
+        spotlight.style.top  = e.clientY + 'px';
+      }, 16));
+
+      // Lerp cursor ring
+      (function animateCursor() {
+        rx += (mx - rx) * 0.10;
+        ry += (my - ry) * 0.10;
+        blob.style.left = mx + 'px'; blob.style.top = my + 'px';
+        ring.style.left = rx + 'px'; ring.style.top = ry + 'px';
+        label.style.left = mx + 'px'; label.style.top = my + 'px';
+        requestAnimationFrame(animateCursor);
+      })();
+
+      // Interactive cursor states
+      document.querySelectorAll('[data-cursor-label], button, a, input, textarea').forEach(el => {
+        el.addEventListener('mouseenter', () => {
+          document.body.classList.add('cursor-hover');
+          const lbl = el.getAttribute('data-cursor-label');
+          label.textContent = lbl || '';
+        });
+        el.addEventListener('mouseleave', () => {
+          document.body.classList.remove('cursor-hover');
+          label.textContent = '';
+        });
+      });
+
+      // =============================================
+      // VANILLA TILT - Enhanced Cards
+      // =============================================
+      VanillaTilt.init(document.querySelectorAll("[data-tilt]"), {
+        max: 1.5, speed: 600, glare: true, 'max-glare': 0.05, perspective: 1000
+      });
+
+      // =============================================
+      // RIPPLE EFFECT ON BUTTONS
+      // =============================================
+      document.querySelectorAll('.btn-premium, .btn-execute').forEach(btn => {
+        btn.addEventListener('click', function(e) {
+          const rect = this.getBoundingClientRect();
+          const ripple = document.createElement('span');
+          ripple.classList.add('ripple');
+          ripple.style.left = (e.clientX - rect.left - 20) + 'px';
+          ripple.style.top  = (e.clientY - rect.top  - 20) + 'px';
+          ripple.style.width = ripple.style.height = '40px';
+          this.style.position = 'relative';
+          this.style.overflow = 'hidden';
+          this.appendChild(ripple);
+          setTimeout(() => ripple.remove(), 500);
+        });
+      });
+
+      // =============================================
+      // SOUND SYSTEM
+      // =============================================
+      let isSoundEnabled = true;
       const sounds = {
-        keypress: new Howl({ src: ['https://actions.google.com/sounds/v1/water/water_drip.ogg'], volume: 0.1 }),
-        error: new Howl({ src: ['https://actions.google.com/sounds/v1/alarms/beep_short.ogg'], volume: 0.2 }),
-        success: new Howl({ src: ['https://actions.google.com/sounds/v1/glass/glass_clink.ogg'], volume: 0.3 })
+        click:   new Howl({ src: ['https://actions.google.com/sounds/v1/water/water_drip.ogg'],    volume: 0.08 }),
+        error:   new Howl({ src: ['https://actions.google.com/sounds/v1/alarms/beep_short.ogg'],   volume: 0.15 }),
+        success: new Howl({ src: ['https://actions.google.com/sounds/v1/glass/glass_clink.ogg'],   volume: 0.2  })
       };
 
-      // Theme Toggle logic
+      function playUISound(type) {
+        if (isSoundEnabled && sounds[type]) sounds[type].play();
+      }
+
+      function toggleSound() {
+        isSoundEnabled = !isSoundEnabled;
+        playUISound('click');
+        const icon = document.getElementById('sound-icon');
+        if (isSoundEnabled) {
+          icon.innerHTML = `<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.536 8.464a5 5 0 010 7.072m2.828-9.9a9 9 0 010 12.728M5.586 15H4a1 1 0 01-1-1v-4a1 1 0 011-1h1.586l4.707-4.707C10.923 3.663 12 4.109 12 5v14c0 .891-1.077 1.337-1.707.707L5.586 15z" />`;
+          notyf.success("Sound Enabled");
+        } else {
+          icon.innerHTML = `<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5.586 15H4a1 1 0 01-1-1v-4a1 1 0 011-1h1.586l4.707-4.707C10.923 3.663 12 4.109 12 5v14c0 .891-1.077 1.337-1.707.707L5.586 15z m5.414-2l4-4m0 4l-4-4" />`;
+          notyf.error("Sound Disabled");
+        }
+      }
+
+      // =============================================
+      // THEME TOGGLE
+      // =============================================
       function toggleTheme() {
+        playUISound('click');
         const html = document.documentElement;
         html.classList.toggle('dark');
         const isDark = html.classList.contains('dark');
-        document.getElementById('theme-icon').innerHTML = isDark 
-          ? '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z" />' // Moon
-          : '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z" />'; // Sun
+
+        if (window.pJSDom && window.pJSDom[0]) {
+          window.pJSDom[0].pJS.particles.color.value = isDark ? '#ffffff' : '#000000';
+          window.pJSDom[0].pJS.particles.line_linked.color = isDark ? '#ffffff' : '#000000';
+          window.pJSDom[0].pJS.fn.particlesRefresh();
+        }
+
+        document.getElementById('theme-icon').innerHTML = isDark
+          ? '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z" />'
+          : '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z" />';
       }
 
-      // Typed.js
+      // =============================================
+      // TYPED.JS
+      // =============================================
       new Typed('#typed-title', {
-        strings: ['OS MINI PROJECT'],
-        typeSpeed: 60, backSpeed: 30, loop: true, showCursor: true
+        strings: ['OS MINI PROJECT', 'SYSTEM ACTIVE', 'GRID ONLINE'],
+        typeSpeed: 55, backSpeed: 25, loop: true, showCursor: true, cursorChar: '|'
       });
 
-      // Tooltips (Tippy.js)
-      tippy('[data-tippy-content]', { theme: 'translucent', animation: 'scale' });
+      // =============================================
+      // TIPPY TOOLTIPS
+      // =============================================
+      tippy('[data-tippy-content]', { theme: 'translucent', animation: 'scale', arrow: false, duration: [150, 100] });
 
-      // Particles.js
+      // =============================================
+      // PARTICLES
+      // =============================================
       particlesJS('particles-js', {
         particles: {
-          number: { value: 30 },
-          color: { value: '#000000' },
-          opacity: { value: 0.2 },
-          size: { value: 3 },
-          line_linked: { enable: true, distance: 150, color: '#000000', opacity: 0.2, width: 1 },
-          move: { enable: true, speed: 1 }
+          number: { value: 22, density: { enable: true, value_area: 900 } },
+          color: { value: document.documentElement.classList.contains('dark') ? '#ffffff' : '#000000' },
+          opacity: { value: 0.12, random: true },
+          size: { value: 1.5, random: true },
+          line_linked: {
+            enable: true, distance: 160,
+            color: document.documentElement.classList.contains('dark') ? '#ffffff' : '#000000',
+            opacity: 0.07, width: 0.8
+          },
+          move: { enable: true, speed: 0.6, direction: 'none', random: true, out_mode: 'out' }
         },
-        interactivity: { detect_on: "canvas", events: { onhover: { enable: true, mode: "grab" } } }
+        interactivity: {
+          detect_on: 'canvas',
+          events: { onhover: { enable: true, mode: 'grab' }, onclick: { enable: false } }
+        }
       });
 
-      // === Application Logic ===
+      // =============================================
+      // DROP ZONE SYSTEM
+      // =============================================
+      const dropzone = document.getElementById('dropzone-overlay');
+      const dropzoneBox = document.getElementById('dropzone-box');
+      let dragCounter = 0;
 
+      document.addEventListener('dragenter', (e) => {
+        e.preventDefault(); dragCounter++;
+        if (dragCounter === 1) dropzone.classList.add('active');
+      });
+      document.addEventListener('dragleave', (e) => {
+        dragCounter--;
+        if (dragCounter <= 0) { dragCounter = 0; dropzone.classList.remove('active'); }
+      });
+      document.addEventListener('dragover', e => e.preventDefault());
+      document.addEventListener('drop', (e) => {
+        e.preventDefault(); dragCounter = 0;
+        dropzone.classList.remove('active');
+        dropzoneBox.classList.remove('drag-over');
+        const file = e.dataTransfer.files[0];
+        if (file) processFile(file);
+      });
+
+      dropzoneBox.addEventListener('dragover', () => dropzoneBox.classList.add('drag-over'));
+      dropzoneBox.addEventListener('dragleave', () => dropzoneBox.classList.remove('drag-over'));
+
+      // Click outside dropzone to dismiss
+      dropzone.addEventListener('click', (e) => {
+        if (e.target === dropzone) dropzone.classList.remove('active');
+      });
+
+      // =============================================
+      // FILE UPLOAD LOGIC (preserved + enhanced)
+      // =============================================
+      function handleFileUpload(event) {
+        const file = event.target.files[0];
+        if (!file) return;
+        processFile(file);
+        event.target.value = '';
+      }
+
+      function processFile(file) {
+        const allowed = ['.c','.cpp','.js','.py','.java','.ts','.json','.txt','.html','.css'];
+        const ext = '.' + file.name.split('.').pop().toLowerCase();
+        if (!allowed.includes(ext)) {
+          playUISound('error');
+          notyf.error('Unsupported file type.');
+          return;
+        }
+        if (file.size > 2 * 1024 * 1024) {
+          playUISound('error');
+          notyf.error('File exceeds 2MB limit.');
+          return;
+        }
+        const reader = new FileReader();
+        reader.onload = (e) => {
+          document.getElementById('codeInput').value = e.target.result;
+          playUISound('success');
+          notyf.success(`Loaded: ${file.name}`);
+          appendToTerminal(`> System: Loaded local file [${file.name}] into editor buffer.`);
+
+          // Show file indicator
+          const ind = document.getElementById('file-indicator');
+          ind.textContent = file.name;
+          ind.classList.add('visible');
+        };
+        reader.readAsText(file);
+      }
+
+      // =============================================
+      // TERMINAL UTILITIES (preserved + animated)
+      // =============================================
       const getTime = () => `[${dayjs().format('HH:mm:ss')}]`;
 
       socket.on("terminal_output", (data) => {
         const cleanText = data.replace(/\x1b\[[0-9;]*m/g, "");
-        terminal.innerHTML += `${getTime()} ${cleanText}`;
-        terminal.scrollTop = terminal.scrollHeight;
+        appendToTerminal(cleanText);
       });
 
       function appendToTerminal(text, type = "info") {
-        const color = type === "error" ? "text-red-400 font-bold" : "opacity-80";
-        terminal.innerHTML += `<span class="${color}">${getTime()} ${text}</span>\n`;
+        const span = document.createElement('span');
+        span.className = `terminal-line ${type === "error" ? "text-red-400 font-bold" : "opacity-80 text-cyan-200"}`;
+        span.textContent = `${getTime()} ${text}\n`;
+        terminal.appendChild(span);
         terminal.scrollTop = terminal.scrollHeight;
       }
 
+      function clearTerminal() {
+        playUISound('click');
+        // Stagger-fade out lines
+        const lines = terminal.querySelectorAll('.terminal-line');
+        lines.forEach((l, i) => {
+          setTimeout(() => { l.style.transition = 'opacity 0.2s ease'; l.style.opacity = '0'; }, i * 20);
+        });
+        setTimeout(() => { terminal.innerHTML = ''; }, lines.length * 20 + 250);
+      }
+
+      // =============================================
+      // PROGRESS BAR ANIMATION
+      // =============================================
+      function animateProgress(cb) {
+        const bar = document.getElementById('progress-bar');
+        bar.style.opacity = '1'; bar.style.width = '0%';
+        const btn = document.getElementById('executeBtn');
+        btn.classList.add('running'); btn.disabled = true;
+        btn.textContent = '⏳ Running';
+
+        let w = 0;
+        const grow = setInterval(() => {
+          w += Math.random() * 8;
+          if (w > 85) { clearInterval(grow); }
+          bar.style.width = Math.min(w, 85) + '%';
+        }, 120);
+
+        return {
+          finish: () => {
+            clearInterval(grow);
+            bar.style.width = '100%';
+            setTimeout(() => {
+              bar.style.opacity = '0'; bar.style.width = '0%';
+              btn.classList.remove('running'); btn.disabled = false;
+              btn.textContent = '▶ Execute';
+            }, 400);
+            cb && cb();
+          }
+        };
+      }
+
+      // =============================================
+      // DISPATCH CODE (preserved + progress enhanced)
+      // =============================================
       async function dispatchCode() {
         const code = document.getElementById("codeInput").value;
         if (!code) {
-          sounds.error.play();
-          return Swal.fire({ title: 'Empty Buffer', text: 'Live editor contains no executable code.', icon: 'warning', background: 'rgba(0,0,0,0.8)', color: '#fff', confirmButtonColor: '#fff', backdrop: 'rgba(0,0,0,0.4)' });
+          playUISound('error');
+          return Swal.fire({
+            title: 'Empty Buffer',
+            text: 'Live editor contains no executable code.',
+            icon: 'warning',
+            background: 'rgba(0,0,0,0.85)',
+            color: '#fff',
+            confirmButtonColor: 'rgba(255,255,255,0.2)',
+            backdrop: 'rgba(0,0,0,0.5)',
+            customClass: { popup: 'glass-card' }
+          });
         }
 
-        sounds.success.play();
+        playUISound('success');
         appendToTerminal(`> Compiling payload via JIT...`);
+        const progress = animateProgress();
+
         try {
-          await axios.post('/api/run-code', { code: code, socketId: socket.id });
+          await axios.post('/api/run-code', { code, socketId: socket.id });
+          progress.finish();
         } catch(e) {
+          progress.finish();
           appendToTerminal(`> Execution failed at memory allocation.`, "error");
+          playUISound('error');
         }
       }
 
-      // Terminal Input Logic
-      const playKeySound = _.debounce(() => sounds.keypress.play(), 50, { leading: true, trailing: false });
+      // =============================================
+      // KEYBOARD SHORTCUTS (preserved)
+      // =============================================
+      document.getElementById('codeInput').addEventListener('keydown', (e) => {
+        if ((e.ctrlKey || e.metaKey) && e.key === 'Enter') {
+          e.preventDefault(); dispatchCode();
+        }
+      });
+
+      // =============================================
+      // TERMINAL INPUT (preserved + sounds)
+      // =============================================
+      const playKeySound = _.debounce(() => playUISound('click'), 60, { leading: true, trailing: false });
       document.getElementById('termInput').addEventListener('keydown', playKeySound);
 
       function sendTerminalInput() {
         const inputEl = document.getElementById("termInput");
-        const text = inputEl.value;
+        const text = inputEl.value.trim();
         if (text) {
-          terminal.innerHTML += `<span class="opacity-100 font-bold">${getTime()} > ${text}</span>\n`;
+          const span = document.createElement('span');
+          span.className = 'terminal-line font-bold text-cyan-300';
+          span.textContent = `${getTime()} > ${text}\n`;
+          terminal.appendChild(span);
           terminal.scrollTop = terminal.scrollHeight;
           socket.emit("terminal_input", text);
           inputEl.value = "";
+          playUISound('click');
         }
       }
 
       document.getElementById('termInput').addEventListener('keypress', (e) => {
         if (e.key === 'Enter') sendTerminalInput();
       });
+
+      // =============================================
+      // AMBIENT FLOATING SHAPES (subtle depth)
+      // =============================================
+      function spawnAmbientShape() {
+        const shape = document.createElement('div');
+        shape.className = 'ambient-shape';
+        const size = 4 + Math.random() * 8;
+        const x = Math.random() * window.innerWidth;
+        const y = window.innerHeight - 50 + Math.random() * 80;
+        const colors = ['rgba(103,232,249,0.3)', 'rgba(167,139,250,0.3)', 'rgba(251,113,133,0.2)'];
+        shape.style.cssText = `
+          width: ${size}px; height: ${size}px;
+          left: ${x}px; top: ${y}px;
+          background: ${colors[Math.floor(Math.random() * colors.length)]};
+          animation-duration: ${6 + Math.random() * 6}s;
+          animation-delay: ${Math.random() * 2}s;
+        `;
+        document.body.appendChild(shape);
+        setTimeout(() => shape.remove(), 14000);
+      }
+
+      // Spawn shapes periodically
+      setInterval(spawnAmbientShape, 3000);
+      // Initial batch
+      for (let i = 0; i < 3; i++) setTimeout(spawnAmbientShape, i * 800);
 
     </script>
   </body>
