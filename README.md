@@ -62,13 +62,14 @@ Browser UI (Socket.io)
 
 ## 🛠️ Tech Stack
 
-| Component | Technology |
-|----------|-----------| Core Language | C (C99) |
-| Backend Runtime | Node.js |
-| Communication | TCP + UDP Multicast |
-| Build Tool | GCC |
-| Realtime UI | Socket.io |
-| OS Support | Linux / macOS |
+| Component        | Technology        |
+|------------------|-------------------|
+| Core Language    | C (C99)           |
+| Backend Runtime  | Node.js           |
+| Communication    | TCP + UDP Multicast |
+| Build Tool       | GCC               |
+| Realtime UI      | Socket.io         |
+| OS Support       | Linux / macOS     |
 
 ---
 
@@ -137,52 +138,53 @@ http://localhost:3000
 ./sender
 ```
 
-Commands:
-
-| Command | Description |
-|--------|-------------| `/path/file.c` | Execute C file |
-| `/path/project/` | Execute multi‑file project |
-| `local /path/file.c` | Force local execution |
+| Command              | Description |
+|---------------------|------------|
+| `/path/file.c`      | Execute C file |
+| `/path/project/`    | Execute multi‑file project |
+| `local /path/file.c`| Force local execution |
 
 ---
 
 ## 🛡️ Security Model
 
-| Risk | Protection |
-|-----|------------| Infinite loop | CPU time limit |
-| Memory abuse | Address space limit |
-| Node crash | Job reassignment |
-| Leader failure | Bully election |
+| Risk            | Protection Mechanism |
+|-----------------|---------------------|
+| Infinite loop   | CPU time limit (RLIMIT_CPU) |
+| Memory abuse    | Address space limit (RLIMIT_AS) |
+| Node crash      | Job reassignment |
+| Leader failure  | Bully election algorithm |
 
 ---
 
 ## 📊 Features Matrix
 
-| Feature | Supported |
-|--------|----------| Peer Discovery | ✅ |
-| Leader Election | ✅ |
-| Load Balancing | ✅ |
-| Fault Tolerance | ✅ |
-| Sandbox Execution | ✅ |
-| Web UI | ✅ |
-| CLI Client | ✅ |
+| Feature            | Supported |
+|--------------------|----------|
+| Peer Discovery     | ✅ |
+| Leader Election    | ✅ |
+| Load Balancing     | ✅ |
+| Fault Tolerance    | ✅ |
+| Sandbox Execution  | ✅ |
+| Web UI             | ✅ |
+| CLI Client         | ✅ |
 
 ---
 
 ## 👨‍💻 Authors
 
-| Name | Roll No |
-|------|--------|
-| PALURI VEERA DURGA VARA PRASAD | 24CS8031 |
-| GOGULAMUDI PREM SANTHOSH | 24CS8032 |
-| PRADIP GORAI | 24CS8033 |
-| GUNTREDDI NEELAPRASANTH | 24CS8034 |
-| DARLA POOJITHA | 24CS8035 |
-| ANJALI SINGH | 24CS8036 |
-| ANIKET HALDAR | 24CS8037 |
-| **ARPIT VERMA (Leader)** | 24CS8038 |
-| HIMANSHU GUPTA | 24CS8039 |
-| RAJ GURU | 24CS8040 |
+| Name                                   | Roll No |
+|----------------------------------------|--------|
+| PALURI VEERA DURGA VARA PRASAD         | 24CS8031 |
+| GOGULAMUDI PREM SANTHOSH               | 24CS8032 |
+| PRADIP GORAI                           | 24CS8033 |
+| GUNTREDDI NEELAPRASANTH                | 24CS8034 |
+| DARLA POOJITHA                         | 24CS8035 |
+| ANJALI SINGH                           | 24CS8036 |
+| ANIKET HALDAR                          | 24CS8037 |
+| **ARPIT VERMA (Leader)**               | 24CS8038 |
+| HIMANSHU GUPTA                         | 24CS8039 |
+| RAJ GURU                               | 24CS8040 |
 
 ---
 
