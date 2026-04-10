@@ -1,0 +1,3 @@
+Timestamp,Event,IP,Detail
+2026-04-10 15:24:15,LEADER_ELECTED,172.24.89.37,"This node won the election"
+2026-04-10 15:24:19,SENDER_CONNECT,127.0.0.1,"Dispatcher connected"
