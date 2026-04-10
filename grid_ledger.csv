@@ -1,8 +1,5 @@
 Timestamp,Event,IP,Detail
-2026-04-10 15:24:15,LEADER_ELECTED,172.24.89.37,"This node won the election"
-2026-04-10 15:24:19,SENDER_CONNECT,127.0.0.1,"Dispatcher connected"
-2026-04-10 16:48:26,LEADER_ELECTED,172.24.89.37,"This node won the election"
-2026-04-10 16:48:35,SENDER_CONNECT,127.0.0.1,"Dispatcher connected"
-2026-04-10 16:49:51,SENDER_CONNECT,127.0.0.1,"Dispatcher connected"
-2026-04-10 17:25:45,LEADER_ELECTED,172.24.89.37,"This node won the election"
-2026-04-10 17:25:48,SENDER_CONNECT,127.0.0.1,"Dispatcher connected"
+2026-04-10 20:41:40,LEADER_ELECTED,172.24.89.37,"This node won the election"
+2026-04-10 20:42:18,SENDER_CONNECT,127.0.0.1,"Dispatcher connected"
+2026-04-10 20:42:53,SENDER_CONNECT,127.0.0.1,"Dispatcher connected"
+2026-04-10 20:52:56,SENDER_CONNECT,127.0.0.1,"Dispatcher connected"

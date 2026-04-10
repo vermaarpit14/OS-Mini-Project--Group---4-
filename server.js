@@ -12,82 +12,159 @@ const io = new Server(server);
 app.use(express.json());
 app.use(express.static("public"));
 
-// This map tracks active sender processes
+/*
+ * Tracks active sender child-processes, keyed by socket.id.
+ * Each entry: { proc: ChildProcess, phase: "secret"|"ip"|"ready"|"running" }
+ */
 const activeJobs = new Map();
 
-function dispatchToGrid(targetPath, socketId) {
+/*
+ * dispatchToGrid
+ * ──────────────
+ * Spawns ./sender, walks through its three-step stdin handshake
+ * (secret → IP → path/command), then streams all output back to
+ * the browser via Socket.IO.
+ */
+function dispatchToGrid(targetPath, socketId, clusterSecret, nodeIp = "127.0.0.1", forceLocal = false) {
   const socket = io.sockets.sockets.get(socketId);
   if (!socket) return;
 
-  // Spawn your existing C sender process
+  const existing = activeJobs.get(socketId);
+  if (existing && !existing.proc.killed) {
+    existing.proc.kill();
+  }
+
   const sender = spawn("./sender");
-  activeJobs.set(socketId, sender);
+  activeJobs.set(socketId, { proc: sender, phase: "secret" });
 
-  // 1. Send the default local IP to the sender prompt
-  sender.stdin.write(`127.0.0.1\n`);
+  let outputBuffer = "";
 
-  // 2. Wait 500ms for grid connection, then send the file/folder path
-  setTimeout(() => {
-    sender.stdin.write(`${targetPath}\n`);
-  }, 500);
+  function handleOutput(data) {
+    const text = data.toString();
+    outputBuffer += text;
 
-  // 3. Stream stdout (normal messages) to the web terminal
-  sender.stdout.on("data", (data) => {
-    socket.emit("terminal_output", data.toString());
-  });
+    const job = activeJobs.get(socketId);
+    if (!job) return;
 
-  // 4. Stream stderr (errors) to the web terminal
-  sender.stderr.on("data", (data) => {
-    socket.emit("terminal_output", data.toString());
-  });
+    if (job.phase === "secret") {
+      if (outputBuffer.includes("Cluster Secret:")) {
+        sender.stdin.write(clusterSecret + "\n");
+        job.phase = "ip";
+        
+        // Push whatever banner text came *before* the prompt to the UI
+        let beforeStr = outputBuffer.substring(0, outputBuffer.indexOf("Cluster Secret:"));
+        outputBuffer = ""; // Reset buffer
+        
+        const clean = beforeStr.replace(/\x1b\[[0-9;]*[mGKHF]/g, "");
+        if (clean.trim()) socket.emit("terminal_output", clean);
+        return;
+      }
+    } else if (job.phase === "ip") {
+      if (outputBuffer.includes("Enter target node IP")) {
+        sender.stdin.write(nodeIp + "\n");
+        job.phase = "ready";
+        
+        // Push whatever text came *before* the IP prompt
+        let beforeStr = outputBuffer.substring(0, outputBuffer.indexOf("Enter target node IP"));
+        outputBuffer = "";
+        
+        const clean = beforeStr.replace(/\x1b\[[0-9;]*[mGKHF]/g, "");
+        if (clean.trim()) socket.emit("terminal_output", clean);
+        socket.emit("terminal_output", `[WEB] Connecting to grid node ${nodeIp}...\n`);
+        return;
+      }
+    } else if (job.phase === "ready") {
+      if (outputBuffer.includes("CODE>")) {
+        const cmd = forceLocal ? `local ${targetPath}` : targetPath;
+        sender.stdin.write(cmd + "\n");
+        job.phase = "running";
+        
+        let beforeStr = outputBuffer.substring(0, outputBuffer.indexOf("CODE>"));
+        outputBuffer = "";
+        
+        const clean = beforeStr.replace(/\x1b\[[0-9;]*[mGKHF]/g, "");
+        if (clean.trim()) socket.emit("terminal_output", clean);
+        return;
+      }
+    } else if (job.phase === "running") {
+        // We are fully connected, just stream everything
+        const clean = text.replace(/\x1b\[[0-9;]*[mGKHF]/g, "");
+        if (clean.trim()) socket.emit("terminal_output", clean);
+    }
+  }
+
+  sender.stdout.on("data", handleOutput);
+  sender.stderr.on("data", handleOutput);
 
   sender.on("close", (code) => {
     socket.emit(
       "terminal_output",
-      `\n[System] Dispatcher disconnected (Code: ${code})\n`,
+      `\n[System] Dispatcher disconnected (exit ${code})\n`
     );
+    activeJobs.delete(socketId);
+  });
+
+  sender.on("error", (err) => {
+    socket.emit("terminal_output", `\n[System] Failed to start sender: ${err.message}\n`);
     activeJobs.delete(socketId);
   });
 }
 
-// Endpoint 1: Handle raw code typed in the browser
+// ─── REST Endpoints ──────────────────────────────────────────────────────────
+
 app.post("/api/run-code", (req, res) => {
-  const { code, socketId } = req.body;
-  // Save web code to a temporary C file
-  const tempPath = path.join("/tmp", `grid_web_${Date.now()}.c`);
-  fs.writeFileSync(tempPath, code);
+  const { code, socketId, clusterSecret, nodeIp, forceLocal } = req.body;
 
-  dispatchToGrid(tempPath, socketId);
+  if (!clusterSecret) {
+    return res.status(400).json({ error: "Cluster secret is required." });
+  }
+  if (!code || !code.trim()) {
+    return res.status(400).json({ error: "No code provided." });
+  }
+
+  const tempPath = path.join("/tmp", `grid_web_${Date.now()}_${socketId.slice(0,6)}.c`);
+  try {
+    fs.writeFileSync(tempPath, code);
+  } catch (e) {
+    return res.status(500).json({ error: "Failed to write temp file." });
+  }
+
+  dispatchToGrid(tempPath, socketId, clusterSecret, nodeIp || "127.0.0.1", !!forceLocal);
   res.json({ success: true });
 });
 
-// Endpoint 2: Handle absolute paths to files or folders
 app.post("/api/run-path", (req, res) => {
-  const { targetPath, socketId } = req.body;
-  dispatchToGrid(targetPath, socketId);
+  const { targetPath, socketId, clusterSecret, nodeIp, forceLocal } = req.body;
+
+  if (!clusterSecret) {
+    return res.status(400).json({ error: "Cluster secret is required." });
+  }
+
+  dispatchToGrid(targetPath, socketId, clusterSecret, nodeIp || "127.0.0.1", !!forceLocal);
   res.json({ success: true });
 });
 
-// Clean up processes on disconnect
-// Listen for connections and handle terminal inputs
+// ─── Socket.IO ───────────────────────────────────────────────────────────────
+
 io.on("connection", (socket) => {
-  // NEW: Listen for user input from the web terminal
   socket.on("terminal_input", (data) => {
-    const process = activeJobs.get(socket.id);
-    // If a job is running, pipe the text directly into the C executable
-    if (process && !process.killed) {
-      process.stdin.write(data + "\n");
+    const job = activeJobs.get(socket.id);
+    if (job && !job.proc.killed) {
+      job.proc.stdin.write(data + "\n");
     }
   });
 
-  // Clean up processes on disconnect
   socket.on("disconnect", () => {
-    const process = activeJobs.get(socket.id);
-    if (process) process.kill();
+    const job = activeJobs.get(socket.id);
+    if (job && !job.proc.killed) job.proc.kill();
+    activeJobs.delete(socket.id);
   });
 });
 
-const PORT = 3000;
+// ─── Start ───────────────────────────────────────────────────────────────────
+
+const PORT = process.env.PORT || 3000;
 server.listen(PORT, () => {
   console.log(`\n[Web UI] Running on http://localhost:${PORT}`);
+  console.log(`[Web UI] Make sure ./sender is compiled and in the same directory.\n`);
 });

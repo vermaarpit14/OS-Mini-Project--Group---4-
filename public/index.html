@@ -21,10 +21,7 @@
       }
     </script>
 
-    <!-- Fonts -->
     <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
-
-    <!-- AOS & Notyf CSS -->
     <link rel="stylesheet" href="https://unpkg.com/aos@next/dist/aos.css" />
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/notyf@3/notyf.min.css">
 
@@ -33,7 +30,6 @@
          CUSTOM CURSOR SYSTEM
       ============================================= */
       * { cursor: none !important; }
-      
       #cursor-blob {
         position: fixed; top: 0; left: 0; width: 18px; height: 18px;
         background: rgba(255,255,255,0.9); border-radius: 50%;
@@ -47,7 +43,7 @@
         border: 1px solid rgba(255,255,255,0.4); border-radius: 50%;
         pointer-events: none; z-index: 99998;
         transform: translate(-50%, -50%);
-        transition: width 0.4s cubic-bezier(0.23,1,0.32,1), height 0.4s cubic-bezier(0.23,1,0.32,1), border-color 0.3s ease, opacity 0.3s ease;
+        transition: width 0.4s cubic-bezier(0.23,1,0.32,1), height 0.4s cubic-bezier(0.23,1,0.32,1), border-color 0.3s ease;
       }
       #cursor-label {
         position: fixed; top: 0; left: 0; pointer-events: none; z-index: 99997;
@@ -59,14 +55,13 @@
       body.cursor-hover #cursor-blob { width: 10px; height: 10px; }
       body.cursor-hover #cursor-ring { width: 60px; height: 60px; border-color: rgba(255,255,255,0.6); }
       body.cursor-hover #cursor-label { opacity: 1; }
-
       @media (max-width: 768px) {
         * { cursor: auto !important; }
         #cursor-blob, #cursor-ring, #cursor-label { display: none; }
       }
 
       /* =============================================
-         GRAIN TEXTURE OVERLAY
+         GRAIN TEXTURE
       ============================================= */
       body::before {
         content: ''; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
@@ -75,9 +70,6 @@
         background-repeat: repeat; background-size: 200px 200px;
       }
 
-      /* =============================================
-         DYNAMIC SPOTLIGHT
-      ============================================= */
       #spotlight {
         position: fixed; width: 600px; height: 600px; border-radius: 50%;
         background: radial-gradient(circle, rgba(255,255,255,0.06) 0%, transparent 70%);
@@ -85,9 +77,6 @@
         transition: opacity 1s ease;
       }
 
-      /* =============================================
-         BACKGROUNDS
-      ============================================= */
       body {
         background: linear-gradient(359.3deg, rgb(196, 214, 252) 1%, rgba(187,187,187,0) 70.9%);
         background-attachment: fixed; background-size: cover;
@@ -97,33 +86,23 @@
         background-attachment: fixed; background-size: cover;
       }
 
-      /* =============================================
-         PARTICLES
-      ============================================= */
       #particles-js {
         position: fixed; width: 100%; height: 100%; top: 0; left: 0; z-index: 0;
         pointer-events: none;
       }
 
-      /* =============================================
-         SCROLLBAR
-      ============================================= */
       ::-webkit-scrollbar { width: 4px; height: 4px; }
       ::-webkit-scrollbar-track { background: transparent; }
       ::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.15); border-radius: 99px; }
       ::-webkit-scrollbar-thumb:hover { background: rgba(255,255,255,0.35); }
 
-      /* =============================================
-         GLASSMORPHISM CARDS
-      ============================================= */
       .glass-card {
         background: rgba(255,255,255,0.12);
         backdrop-filter: blur(24px) saturate(180%);
         -webkit-backdrop-filter: blur(24px) saturate(180%);
         border: 1px solid rgba(255,255,255,0.35);
         box-shadow: 0 8px 32px rgba(0,0,0,0.06), inset 0 1px 0 rgba(255,255,255,0.3);
-        transform-style: preserve-3d;
-        will-change: transform;
+        transform-style: preserve-3d; will-change: transform;
       }
       html.dark .glass-card {
         background: rgba(0,0,0,0.3);
@@ -141,18 +120,12 @@
         box-shadow: 0 0 0 1px rgba(255,255,255,0.06), 0 0 35px rgba(255,255,255,0.05);
       }
 
-      /* =============================================
-         HEADER ENTRANCE + FLOATING
-      ============================================= */
       @keyframes headerFloat {
         0%, 100% { transform: translateY(0px); }
         50% { transform: translateY(-3px); }
       }
       .header-float { animation: headerFloat 6s ease-in-out infinite; }
 
-      /* =============================================
-         BUTTON MICROINTERACTIONS
-      ============================================= */
       .btn-premium {
         position: relative; overflow: hidden;
         transition: transform 0.2s cubic-bezier(0.34,1.56,0.64,1), box-shadow 0.3s ease, background 0.3s ease !important;
@@ -165,20 +138,14 @@
       }
       .btn-premium:hover::after { background: rgba(255,255,255,0.06); }
 
-      /* Ripple on click */
       .ripple {
         position: absolute; border-radius: 50%;
         background: rgba(255,255,255,0.3);
         transform: scale(0); animation: ripple-anim 0.5s ease-out;
         pointer-events: none;
       }
-      @keyframes ripple-anim {
-        to { transform: scale(3); opacity: 0; }
-      }
+      @keyframes ripple-anim { to { transform: scale(3); opacity: 0; } }
 
-      /* =============================================
-         EXECUTE BUTTON — GLOW PULSE
-      ============================================= */
       .btn-execute {
         background: linear-gradient(135deg, rgba(255,255,255,0.22), rgba(255,255,255,0.08)) !important;
         border: 1px solid rgba(255,255,255,0.3) !important;
@@ -191,22 +158,22 @@
         background: linear-gradient(135deg, rgba(255,255,255,0.32), rgba(255,255,255,0.14)) !important;
       }
       .btn-execute:active { transform: scale(0.95) !important; }
-      .btn-execute.running {
-        animation: executeGlow 1.2s ease-in-out infinite;
-      }
+      .btn-execute.running { animation: executeGlow 1.2s ease-in-out infinite; }
       @keyframes executeGlow {
         0%, 100% { box-shadow: 0 0 0 0 rgba(255,255,255,0.2); }
         50% { box-shadow: 0 0 20px 4px rgba(255,255,255,0.1); }
       }
 
-      /* =============================================
-         TERMINAL
-      ============================================= */
-      #terminal {
-        line-height: 1.7;
-        background: transparent;
+      /* ─── Force-local button active state ─── */
+      .btn-local-active {
+        background: linear-gradient(135deg, rgba(103,232,249,0.3), rgba(103,232,249,0.1)) !important;
+        border-color: rgba(103,232,249,0.6) !important;
+        color: rgb(103,232,249) !important;
+        box-shadow: 0 0 16px rgba(103,232,249,0.2) !important;
       }
-      .terminal-line { 
+
+      #terminal { line-height: 1.7; background: transparent; }
+      .terminal-line {
         display: block; opacity: 0;
         animation: terminalReveal 0.3s ease forwards;
       }
@@ -215,26 +182,14 @@
         to { opacity: 1; transform: translateX(0); }
       }
 
-      /* =============================================
-         EDITOR — ANIMATED CARET GLOW
-      ============================================= */
       #codeInput {
-        caret-color: rgba(103, 232, 249, 0.9);
-        background: transparent;
-        color: inherit;
-        line-height: 1.75;
-        letter-spacing: 0.01em;
+        caret-color: rgba(103,232,249,0.9);
+        background: transparent; color: inherit;
+        line-height: 1.75; letter-spacing: 0.01em;
       }
-      #codeInput:focus {
-        outline: none;
-      }
+      #codeInput:focus { outline: none; }
 
-      /* =============================================
-         TERMINAL INPUT — ANIMATED FOCUS BORDER
-      ============================================= */
-      .term-input-wrapper {
-        position: relative;
-      }
+      .term-input-wrapper { position: relative; }
       .term-input-wrapper::after {
         content: ''; position: absolute; bottom: 0; left: 0;
         height: 1px; width: 0%; background: rgba(103,232,249,0.6);
@@ -242,27 +197,52 @@
       }
       .term-input-wrapper:focus-within::after { width: 100%; }
 
-      /* =============================================
-         FILE UPLOAD DROP ZONE
-      ============================================= */
+      /* ─── Connection config panel ─── */
+      .config-panel {
+        background: rgba(0,0,0,0.25);
+        border-bottom: 1px solid rgba(255,255,255,0.08);
+        backdrop-filter: blur(8px);
+      }
+      .config-input {
+        background: rgba(255,255,255,0.06);
+        border: 1px solid rgba(255,255,255,0.12);
+        border-radius: 8px;
+        padding: 5px 10px;
+        font-size: 11px;
+        font-family: 'JetBrains Mono', monospace;
+        color: inherit;
+        outline: none;
+        transition: border-color 0.3s ease, box-shadow 0.3s ease;
+        width: 100%;
+      }
+      .config-input:focus {
+        border-color: rgba(103,232,249,0.5);
+        box-shadow: 0 0 12px rgba(103,232,249,0.1);
+      }
+      .config-input::placeholder { opacity: 0.35; }
+
+      /* password dots stay visible even in dark mode */
+      .config-input[type="password"] { letter-spacing: 0.15em; }
+
+      /* secret lock icon state */
+      #secret-lock { transition: color 0.3s ease, transform 0.4s cubic-bezier(0.34,1.56,0.64,1); }
+      #secret-lock.unlocked { color: rgb(52,211,153); transform: rotate(-15deg) scale(1.2); }
+
       #dropzone-overlay {
         position: fixed; inset: 0; z-index: 9999;
-        background: rgba(0,0,0,0.7);
-        backdrop-filter: blur(12px);
+        background: rgba(0,0,0,0.7); backdrop-filter: blur(12px);
         display: flex; align-items: center; justify-content: center;
-        opacity: 0; pointer-events: none;
-        transition: opacity 0.3s ease;
+        opacity: 0; pointer-events: none; transition: opacity 0.3s ease;
       }
       #dropzone-overlay.active { opacity: 1; pointer-events: all; }
       .dropzone-box {
         width: min(480px, 90vw); padding: 60px 40px;
         border: 2px dashed rgba(255,255,255,0.3); border-radius: 24px;
         text-align: center; color: rgba(255,255,255,0.8);
-        position: relative; overflow: hidden;
         animation: dropzoneBreath 2s ease-in-out infinite;
       }
       @keyframes dropzoneBreath {
-        0%, 100% { border-color: rgba(255,255,255,0.25); box-shadow: 0 0 0 0 rgba(255,255,255,0.1); }
+        0%, 100% { border-color: rgba(255,255,255,0.25); box-shadow: none; }
         50% { border-color: rgba(255,255,255,0.5); box-shadow: 0 0 30px 4px rgba(255,255,255,0.06); }
       }
       .dropzone-box.drag-over {
@@ -271,29 +251,19 @@
         box-shadow: 0 0 40px rgba(103,232,249,0.15);
       }
 
-      /* =============================================
-         FILE NAME INDICATOR
-      ============================================= */
       #file-indicator {
         font-size: 11px; font-family: 'JetBrains Mono', monospace;
         opacity: 0; max-width: 160px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
-        transition: opacity 0.4s ease, transform 0.4s ease;
-        transform: translateY(4px);
+        transition: opacity 0.4s ease, transform 0.4s ease; transform: translateY(4px);
       }
       #file-indicator.visible { opacity: 0.7; transform: translateY(0); }
 
-      /* =============================================
-         STATUS DOT PULSE
-      ============================================= */
       @keyframes statusPulse {
         0%, 100% { box-shadow: 0 0 0 0 rgba(52,211,153,0.6); }
         50% { box-shadow: 0 0 0 6px rgba(52,211,153,0); }
       }
       .status-dot { animation: statusPulse 2s ease-in-out infinite; }
 
-      /* =============================================
-         ANIMATED DIVIDERS
-      ============================================= */
       .divider-line {
         height: 1px; width: 100%;
         background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
@@ -304,57 +274,33 @@
         width: 60%; height: 100%; background: rgba(255,255,255,0.4);
         animation: dividerShine 4s ease-in-out infinite;
       }
-      @keyframes dividerShine {
-        to { left: 200%; }
-      }
+      @keyframes dividerShine { to { left: 200%; } }
 
-      /* =============================================
-         ENTRANCE ANIMATIONS
-      ============================================= */
       .reveal-up {
         opacity: 0; transform: translateY(20px);
         animation: revealUp 0.8s cubic-bezier(0.23,1,0.32,1) forwards;
       }
-      @keyframes revealUp {
-        to { opacity: 1; transform: translateY(0); }
-      }
+      @keyframes revealUp { to { opacity: 1; transform: translateY(0); } }
 
-      /* =============================================
-         LOADING BAR (Execute progress)
-      ============================================= */
       #progress-bar {
         position: absolute; bottom: 0; left: 0; height: 2px; width: 0%;
         background: linear-gradient(90deg, rgba(103,232,249,0.8), rgba(167,139,250,0.8));
-        border-radius: 0 1px 1px 0;
-        transition: width 0.3s ease;
-        opacity: 0;
+        border-radius: 0 1px 1px 0; transition: width 0.3s ease; opacity: 0;
       }
 
-      /* =============================================
-         GLOBAL SMOOTH TRANSITIONS (preserved)
-      ============================================= */
       * { transition: background-color 0.4s ease, border-color 0.4s ease, color 0.4s ease; }
       .btn-premium, .btn-execute { transition: all 0.3s cubic-bezier(0.34,1.56,0.64,1) !important; }
 
-      /* =============================================
-         TIPPY THEME
-      ============================================= */
       .tippy-box[data-theme~='translucent'] {
-        background: rgba(0,0,0,0.75);
-        backdrop-filter: blur(12px);
+        background: rgba(0,0,0,0.75); backdrop-filter: blur(12px);
         border: 1px solid rgba(255,255,255,0.12);
         font-family: 'Space Grotesk', sans-serif;
-        font-size: 11px; letter-spacing: 0.04em;
-        border-radius: 8px;
+        font-size: 11px; letter-spacing: 0.04em; border-radius: 8px;
       }
 
-      /* =============================================
-         AMBIENT FLOATING SHAPES
-      ============================================= */
       .ambient-shape {
         position: fixed; border-radius: 50%; pointer-events: none; z-index: 0;
-        opacity: 0; animation: ambientFloat 8s ease-in-out infinite;
-        will-change: transform;
+        opacity: 0; animation: ambientFloat 8s ease-in-out infinite; will-change: transform;
       }
       @keyframes ambientFloat {
         0% { transform: translateY(0px) rotate(0deg); opacity: 0; }
@@ -362,23 +308,28 @@
         80% { opacity: 0.6; }
         100% { transform: translateY(-80px) rotate(360deg); opacity: 0; }
       }
+
+      /* Secret field shake animation on auth failure */
+      @keyframes shake {
+        0%, 100% { transform: translateX(0); }
+        20% { transform: translateX(-6px); }
+        40% { transform: translateX(6px); }
+        60% { transform: translateX(-4px); }
+        80% { transform: translateX(4px); }
+      }
+      .shake { animation: shake 0.4s ease !important; }
     </style>
   </head>
 
   <body class="text-zinc-900 dark:text-zinc-100 antialiased h-screen flex flex-col relative overflow-hidden">
 
-    <!-- Custom Cursor -->
     <div id="cursor-blob"></div>
     <div id="cursor-ring"></div>
     <div id="cursor-label"></div>
-
-    <!-- Dynamic Spotlight -->
     <div id="spotlight"></div>
-
-    <!-- Particles Background -->
     <div id="particles-js"></div>
 
-    <!-- File Drop Zone Overlay -->
+    <!-- File Drop Zone -->
     <div id="dropzone-overlay">
       <div class="dropzone-box" id="dropzone-box">
         <div style="font-size: 48px; margin-bottom: 16px; opacity: 0.5;">⬆</div>
@@ -398,7 +349,6 @@
       </div>
 
       <div class="flex items-center gap-3">
-        <!-- Sound Toggle -->
         <button onclick="toggleSound()" data-tippy-content="Toggle UI Sounds" data-cursor-label="Sound"
           class="btn-premium p-2 rounded-full bg-white/20 hover:bg-white/35 dark:bg-black/30 dark:hover:bg-black/50 backdrop-blur-md border border-white/20">
           <svg id="sound-icon" class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -406,7 +356,6 @@
           </svg>
         </button>
 
-        <!-- Theme Toggle -->
         <button onclick="toggleTheme()" data-tippy-content="Toggle Light/Dark Mode" data-cursor-label="Theme"
           class="btn-premium p-2 rounded-full bg-white/20 hover:bg-white/35 dark:bg-black/30 dark:hover:bg-black/50 backdrop-blur-md border border-white/20">
           <svg id="theme-icon" class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -414,7 +363,6 @@
           </svg>
         </button>
 
-        <!-- Status Badge -->
         <div class="flex items-center gap-2 glass-card px-4 py-2 rounded-full" data-tippy-content="System Status: Optimal">
           <span class="status-dot w-2 h-2 rounded-full bg-emerald-400 shrink-0"></span>
           <span class="text-[10px] font-bold tracking-[0.15em] uppercase">Connected</span>
@@ -429,10 +377,8 @@
       <div class="flex flex-col w-full lg:w-1/2 min-h-0 focus-glow glass-card rounded-2xl reveal-up" style="animation-delay: 0.25s;" data-tilt data-tilt-max="1.5" data-tilt-speed="600" data-tilt-glare data-tilt-max-glare="0.05">
         <div class="flex flex-col flex-1 relative overflow-hidden h-full">
 
-          <!-- Terminal Header -->
-          <div class="bg-white/10 dark:bg-black/30 px-5 py-3 flex justify-between items-center select-none rounded-t-2xl">
+          <div class="flex justify-between items-center px-5 py-3 bg-white/10 dark:bg-black/30 rounded-t-2xl select-none">
             <div class="flex gap-2 items-center">
-              <!-- Traffic lights -->
               <div class="flex gap-1.5">
                 <div class="w-3 h-3 rounded-full bg-red-400/70 hover:bg-red-400 transition-colors" style="box-shadow: 0 0 6px rgba(248,113,113,0.4);"></div>
                 <div class="w-3 h-3 rounded-full bg-yellow-400/70 hover:bg-yellow-400 transition-colors" style="box-shadow: 0 0 6px rgba(250,204,21,0.4);"></div>
@@ -456,7 +402,6 @@
       <div class="flex flex-col w-full lg:w-1/2 min-h-0 focus-glow glass-card rounded-2xl reveal-up" style="animation-delay: 0.35s;" data-tilt data-tilt-max="1.5" data-tilt-speed="600" data-tilt-glare data-tilt-max-glare="0.05">
         <div class="flex flex-col flex-1 relative overflow-hidden h-full min-h-[400px]">
 
-          <!-- Progress Bar -->
           <div id="progress-bar"></div>
 
           <!-- Editor Header -->
@@ -469,7 +414,18 @@
             <div class="flex gap-2 items-center">
               <input type="file" id="fileUpload" class="hidden" accept=".c,.cpp,.js,.py,.java,.ts,.json,.txt,.html,.css" onchange="handleFileUpload(event)">
 
-              <!-- Upload Button -->
+              <!-- Force-local toggle button -->
+              <button id="localBtn" onclick="toggleForceLocal()" data-cursor-label="Force Local"
+                data-tippy-content="Force execution on Coordinator node (bypasses load balancer)"
+                class="btn-premium flex items-center gap-1.5 bg-white/10 hover:bg-white/25 dark:bg-black/20 dark:hover:bg-black/40 px-3 py-1.5 rounded-lg text-[10px] font-bold uppercase tracking-wider border border-white/15">
+                <!-- lock icon: open = distributed, closed = local -->
+                <svg id="local-icon" class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                    d="M8 11V7a4 4 0 118 0m-4 8v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2z" />
+                </svg>
+                <span id="local-label">Distributed</span>
+              </button>
+
               <button onclick="document.getElementById('fileUpload').click(); playUISound('click');"
                 data-tippy-content="Upload Source File" data-cursor-label="Upload"
                 class="btn-premium flex items-center gap-1.5 bg-white/10 hover:bg-white/25 dark:bg-black/20 dark:hover:bg-black/40 px-3 py-1.5 rounded-lg text-[10px] font-bold uppercase tracking-wider border border-white/15">
@@ -479,7 +435,6 @@
                 Upload
               </button>
 
-              <!-- Execute Button -->
               <button id="executeBtn" onclick="dispatchCode()" data-cursor-label="Execute"
                 data-tippy-content="Compile & Run (Ctrl+Enter)"
                 class="btn-execute px-4 py-1.5 rounded-lg text-[10px] font-bold uppercase tracking-wider">
@@ -489,6 +444,71 @@
           </div>
 
           <div class="divider-line"></div>
+
+          <!-- ─── Connection Config Panel ─── -->
+          <!--
+            NEW: This row sits between the editor header and the code textarea.
+            It holds the Cluster Secret (password) and Node IP fields so the
+            user never has to interact with the terminal directly for auth.
+          -->
+          <div class="config-panel px-5 py-3 flex flex-wrap gap-4 items-center">
+
+            <!-- Cluster Secret -->
+            <div class="flex items-center gap-2 flex-1 min-w-[160px]">
+              <svg id="secret-lock" class="w-3.5 h-3.5 shrink-0 opacity-50" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                  d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
+              </svg>
+              <div class="relative flex-1">
+                <input
+                  type="password"
+                  id="clusterSecret"
+                  class="config-input pr-8"
+                  placeholder="Cluster Secret"
+                  data-cursor-label="Secret"
+                  data-tippy-content="Must match CLUSTER_SECRET in node.c"
+                  autocomplete="off"
+                />
+                <!-- Show/hide toggle -->
+                <button
+                  onclick="toggleSecretVisibility()"
+                  class="absolute right-2 top-1/2 -translate-y-1/2 opacity-30 hover:opacity-70 transition-opacity"
+                  data-cursor-label="Show"
+                  style="cursor: pointer !important;"
+                  tabindex="-1">
+                  <svg id="eye-icon" class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                      d="M15 12a3 3 0 11-6 0 3 3 0 016 0zm-3-9C6.477 3 2 12 2 12s4.477 9 10 9 10-9 10-9S17.523 3 12 3z" />
+                  </svg>
+                </button>
+              </div>
+            </div>
+
+            <!-- Vertical divider -->
+            <div class="w-px h-5 bg-white/10 shrink-0 hidden sm:block"></div>
+
+            <!-- Node IP -->
+            <div class="flex items-center gap-2 flex-1 min-w-[130px]">
+              <svg class="w-3.5 h-3.5 shrink-0 opacity-40" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                  d="M5 12h14M5 12a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v4a2 2 0 01-2 2M5 12a2 2 0 00-2 2v4a2 2 0 002 2h14a2 2 0 002-2v-4a2 2 0 00-2-2m-2-4h.01M17 16h.01" />
+              </svg>
+              <input
+                type="text"
+                id="nodeIp"
+                class="config-input flex-1"
+                placeholder="Node IP  (127.0.0.1)"
+                value="127.0.0.1"
+                data-cursor-label="IP"
+                data-tippy-content="Target grid node IP address"
+              />
+            </div>
+
+            <!-- Config hint -->
+            <span class="text-[9px] opacity-20 font-mono tracking-wider hidden md:block shrink-0">AUTH CONFIG</span>
+          </div>
+
+          <div class="divider-line" style="opacity: 0.5;"></div>
 
           <!-- Code Textarea -->
           <textarea id="codeInput" spellcheck="false"
@@ -515,7 +535,6 @@
     <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/lodash@4.17.21/lodash.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/dayjs@1/dayjs.min.js"></script>
-
     <script src="https://unpkg.com/aos@next/dist/aos.js"></script>
     <script src="https://unpkg.com/typed.js@2.0.16/dist/typed.umd.js"></script>
     <script src="https://cdn.jsdelivr.net/particles.js/2.0.0/particles.min.js"></script>
@@ -528,7 +547,7 @@
 
     <script>
       // =============================================
-      // INITIALIZATION
+      // INIT
       // =============================================
       AOS.init({ duration: 800, once: true, easing: 'ease-out-cubic' });
 
@@ -541,8 +560,70 @@
         ripple: true,
         types: [
           { type: 'success', background: 'rgba(52,211,153,0.88)', icon: false },
-          { type: 'error', background: 'rgba(248,113,113,0.88)', icon: false }
+          { type: 'error',   background: 'rgba(248,113,113,0.88)', icon: false }
         ]
+      });
+
+      // =============================================
+      // NEW STATE: force-local toggle
+      // =============================================
+      let forceLocal = false;
+
+      function toggleForceLocal() {
+        forceLocal = !forceLocal;
+        playUISound('click');
+
+        const btn   = document.getElementById('localBtn');
+        const label = document.getElementById('local-label');
+        const icon  = document.getElementById('local-icon');
+
+        if (forceLocal) {
+          btn.classList.add('btn-local-active');
+          label.textContent = 'Force Local';
+          // Closed padlock path
+          icon.innerHTML = `<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+            d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />`;
+          notyf.success('Force Local: ON — Coordinator will run this job directly.');
+          appendToTerminal('> [Config] Force-local execution enabled. Job will bypass load balancer.');
+        } else {
+          btn.classList.remove('btn-local-active');
+          label.textContent = 'Distributed';
+          // Open padlock path
+          icon.innerHTML = `<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+            d="M8 11V7a4 4 0 118 0m-4 8v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2z" />`;
+          notyf.success('Distributed: ON — Jobs will be load-balanced across the grid.');
+          appendToTerminal('> [Config] Distributed execution enabled. Load balancer active.');
+        }
+      }
+
+      // =============================================
+      // SECRET FIELD HELPERS
+      // =============================================
+      function toggleSecretVisibility() {
+        const field = document.getElementById('clusterSecret');
+        const eyeIcon = document.getElementById('eye-icon');
+        if (field.type === 'password') {
+          field.type = 'text';
+          // "eye-off" path
+          eyeIcon.innerHTML = `
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+              d="M13.875 18.825A10.05 10.05 0 0112 19c-5.523 0-10-9-10-9a18.02 18.02 0 015.06-5.94M9.9 4.24A9.12 9.12 0 0112 4c5.523 0 10 9 10 9a18.09 18.09 0 01-2.16 2.86m-6.72-4.15a3 3 0 11-4.243-4.243M3 3l18 18" />`;
+        } else {
+          field.type = 'password';
+          eyeIcon.innerHTML = `
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+              d="M15 12a3 3 0 11-6 0 3 3 0 016 0zm-3-9C6.477 3 2 12 2 12s4.477 9 10 9 10-9 10-9S17.523 3 12 3z" />`;
+        }
+      }
+
+      // Animate the lock icon when a secret is entered
+      document.getElementById('clusterSecret').addEventListener('input', function() {
+        const lock = document.getElementById('secret-lock');
+        if (this.value.length > 0) {
+          lock.classList.add('unlocked');
+        } else {
+          lock.classList.remove('unlocked');
+        }
       });
 
       // =============================================
@@ -555,14 +636,12 @@
 
       document.addEventListener('mousemove', e => { mx = e.clientX; my = e.clientY; });
 
-      // Spotlight
       const spotlight = document.getElementById('spotlight');
       document.addEventListener('mousemove', _.throttle(e => {
         spotlight.style.left = e.clientX + 'px';
         spotlight.style.top  = e.clientY + 'px';
       }, 16));
 
-      // Lerp cursor ring
       (function animateCursor() {
         rx += (mx - rx) * 0.10;
         ry += (my - ry) * 0.10;
@@ -572,7 +651,6 @@
         requestAnimationFrame(animateCursor);
       })();
 
-      // Interactive cursor states
       document.querySelectorAll('[data-cursor-label], button, a, input, textarea').forEach(el => {
         el.addEventListener('mouseenter', () => {
           document.body.classList.add('cursor-hover');
@@ -585,16 +663,10 @@
         });
       });
 
-      // =============================================
-      // VANILLA TILT - Enhanced Cards
-      // =============================================
       VanillaTilt.init(document.querySelectorAll("[data-tilt]"), {
         max: 1.5, speed: 600, glare: true, 'max-glare': 0.05, perspective: 1000
       });
 
-      // =============================================
-      // RIPPLE EFFECT ON BUTTONS
-      // =============================================
       document.querySelectorAll('.btn-premium, .btn-execute').forEach(btn => {
         btn.addEventListener('click', function(e) {
           const rect = this.getBoundingClientRect();
@@ -603,8 +675,7 @@
           ripple.style.left = (e.clientX - rect.left - 20) + 'px';
           ripple.style.top  = (e.clientY - rect.top  - 20) + 'px';
           ripple.style.width = ripple.style.height = '40px';
-          this.style.position = 'relative';
-          this.style.overflow = 'hidden';
+          this.style.position = 'relative'; this.style.overflow = 'hidden';
           this.appendChild(ripple);
           setTimeout(() => ripple.remove(), 500);
         });
@@ -619,11 +690,9 @@
         error:   new Howl({ src: ['https://actions.google.com/sounds/v1/alarms/beep_short.ogg'],   volume: 0.15 }),
         success: new Howl({ src: ['https://actions.google.com/sounds/v1/glass/glass_clink.ogg'],   volume: 0.2  })
       };
-
       function playUISound(type) {
         if (isSoundEnabled && sounds[type]) sounds[type].play();
       }
-
       function toggleSound() {
         isSoundEnabled = !isSoundEnabled;
         playUISound('click');
@@ -645,13 +714,11 @@
         const html = document.documentElement;
         html.classList.toggle('dark');
         const isDark = html.classList.contains('dark');
-
         if (window.pJSDom && window.pJSDom[0]) {
           window.pJSDom[0].pJS.particles.color.value = isDark ? '#ffffff' : '#000000';
           window.pJSDom[0].pJS.particles.line_linked.color = isDark ? '#ffffff' : '#000000';
           window.pJSDom[0].pJS.fn.particlesRefresh();
         }
-
         document.getElementById('theme-icon').innerHTML = isDark
           ? '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z" />'
           : '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z" />';
@@ -693,39 +760,27 @@
       });
 
       // =============================================
-      // DROP ZONE SYSTEM
+      // DROP ZONE
       // =============================================
       const dropzone = document.getElementById('dropzone-overlay');
       const dropzoneBox = document.getElementById('dropzone-box');
       let dragCounter = 0;
 
-      document.addEventListener('dragenter', (e) => {
-        e.preventDefault(); dragCounter++;
-        if (dragCounter === 1) dropzone.classList.add('active');
-      });
-      document.addEventListener('dragleave', (e) => {
-        dragCounter--;
-        if (dragCounter <= 0) { dragCounter = 0; dropzone.classList.remove('active'); }
-      });
+      document.addEventListener('dragenter', (e) => { e.preventDefault(); dragCounter++; if (dragCounter === 1) dropzone.classList.add('active'); });
+      document.addEventListener('dragleave', (e) => { dragCounter--; if (dragCounter <= 0) { dragCounter = 0; dropzone.classList.remove('active'); } });
       document.addEventListener('dragover', e => e.preventDefault());
       document.addEventListener('drop', (e) => {
         e.preventDefault(); dragCounter = 0;
-        dropzone.classList.remove('active');
-        dropzoneBox.classList.remove('drag-over');
+        dropzone.classList.remove('active'); dropzoneBox.classList.remove('drag-over');
         const file = e.dataTransfer.files[0];
         if (file) processFile(file);
       });
-
       dropzoneBox.addEventListener('dragover', () => dropzoneBox.classList.add('drag-over'));
       dropzoneBox.addEventListener('dragleave', () => dropzoneBox.classList.remove('drag-over'));
-
-      // Click outside dropzone to dismiss
-      dropzone.addEventListener('click', (e) => {
-        if (e.target === dropzone) dropzone.classList.remove('active');
-      });
+      dropzone.addEventListener('click', (e) => { if (e.target === dropzone) dropzone.classList.remove('active'); });
 
       // =============================================
-      // FILE UPLOAD LOGIC (preserved + enhanced)
+      // FILE UPLOAD
       // =============================================
       function handleFileUpload(event) {
         const file = event.target.files[0];
@@ -737,24 +792,14 @@
       function processFile(file) {
         const allowed = ['.c','.cpp','.js','.py','.java','.ts','.json','.txt','.html','.css'];
         const ext = '.' + file.name.split('.').pop().toLowerCase();
-        if (!allowed.includes(ext)) {
-          playUISound('error');
-          notyf.error('Unsupported file type.');
-          return;
-        }
-        if (file.size > 2 * 1024 * 1024) {
-          playUISound('error');
-          notyf.error('File exceeds 2MB limit.');
-          return;
-        }
+        if (!allowed.includes(ext)) { playUISound('error'); notyf.error('Unsupported file type.'); return; }
+        if (file.size > 2 * 1024 * 1024) { playUISound('error'); notyf.error('File exceeds 2MB limit.'); return; }
         const reader = new FileReader();
         reader.onload = (e) => {
           document.getElementById('codeInput').value = e.target.result;
           playUISound('success');
           notyf.success(`Loaded: ${file.name}`);
           appendToTerminal(`> System: Loaded local file [${file.name}] into editor buffer.`);
-
-          // Show file indicator
           const ind = document.getElementById('file-indicator');
           ind.textContent = file.name;
           ind.classList.add('visible');
@@ -763,12 +808,25 @@
       }
 
       // =============================================
-      // TERMINAL UTILITIES (preserved + animated)
+      // TERMINAL UTILITIES
       // =============================================
       const getTime = () => `[${dayjs().format('HH:mm:ss')}]`;
 
       socket.on("terminal_output", (data) => {
         const cleanText = data.replace(/\x1b\[[0-9;]*m/g, "");
+
+        /*
+         * Watch for auth failure messages coming back from the grid node
+         * and shake the secret field to hint the user.
+         */
+        if (cleanText.includes("Invalid cluster secret") || cleanText.includes("Handshake denied")) {
+          playUISound('error');
+          notyf.error('Auth failed — check your Cluster Secret.');
+          const secretField = document.getElementById('clusterSecret');
+          secretField.classList.add('shake');
+          setTimeout(() => secretField.classList.remove('shake'), 500);
+        }
+
         appendToTerminal(cleanText);
       });
 
@@ -782,7 +840,6 @@
 
       function clearTerminal() {
         playUISound('click');
-        // Stagger-fade out lines
         const lines = terminal.querySelectorAll('.terminal-line');
         lines.forEach((l, i) => {
           setTimeout(() => { l.style.transition = 'opacity 0.2s ease'; l.style.opacity = '0'; }, i * 20);
@@ -791,7 +848,7 @@
       }
 
       // =============================================
-      // PROGRESS BAR ANIMATION
+      // PROGRESS BAR
       // =============================================
       function animateProgress(cb) {
         const bar = document.getElementById('progress-bar');
@@ -803,7 +860,7 @@
         let w = 0;
         const grow = setInterval(() => {
           w += Math.random() * 8;
-          if (w > 85) { clearInterval(grow); }
+          if (w > 85) clearInterval(grow);
           bar.style.width = Math.min(w, 85) + '%';
         }, 120);
 
@@ -822,18 +879,30 @@
       }
 
       // =============================================
-      // DISPATCH CODE (preserved + progress enhanced)
+      // DISPATCH CODE
+      // Updated to send clusterSecret, nodeIp, and forceLocal to server.js
       // =============================================
       async function dispatchCode() {
         const code = document.getElementById("codeInput").value;
-        if (!code) {
+        const clusterSecret = document.getElementById("clusterSecret").value.trim();
+        const nodeIp = document.getElementById("nodeIp").value.trim() || "127.0.0.1";
+
+        // Validate secret field
+        if (!clusterSecret) {
+          playUISound('error');
+          const secretField = document.getElementById('clusterSecret');
+          secretField.classList.add('shake');
+          setTimeout(() => secretField.classList.remove('shake'), 500);
+          return notyf.error('Enter the Cluster Secret before executing.');
+        }
+
+        if (!code.trim()) {
           playUISound('error');
           return Swal.fire({
             title: 'Empty Buffer',
             text: 'Live editor contains no executable code.',
             icon: 'warning',
-            background: 'rgba(0,0,0,0.85)',
-            color: '#fff',
+            background: 'rgba(0,0,0,0.85)', color: '#fff',
             confirmButtonColor: 'rgba(255,255,255,0.2)',
             backdrop: 'rgba(0,0,0,0.5)',
             customClass: { popup: 'glass-card' }
@@ -841,21 +910,34 @@
         }
 
         playUISound('success');
-        appendToTerminal(`> Compiling payload via JIT...`);
+
+        if (forceLocal) {
+          appendToTerminal(`> [Force-Local] Submitting to Coordinator at ${nodeIp}...`);
+        } else {
+          appendToTerminal(`> Compiling payload via JIT... (grid: ${nodeIp})`);
+        }
+
         const progress = animateProgress();
 
         try {
-          await axios.post('/api/run-code', { code, socketId: socket.id });
+          await axios.post('/api/run-code', {
+            code,
+            socketId: socket.id,
+            clusterSecret,
+            nodeIp,
+            forceLocal   // ← boolean, server.js passes it to dispatchToGrid
+          });
           progress.finish();
-        } catch(e) {
+        } catch (e) {
           progress.finish();
-          appendToTerminal(`> Execution failed at memory allocation.`, "error");
+          const msg = e.response?.data?.error || 'Execution failed at memory allocation.';
+          appendToTerminal(`> ${msg}`, "error");
           playUISound('error');
         }
       }
 
       // =============================================
-      // KEYBOARD SHORTCUTS (preserved)
+      // KEYBOARD SHORTCUTS
       // =============================================
       document.getElementById('codeInput').addEventListener('keydown', (e) => {
         if ((e.ctrlKey || e.metaKey) && e.key === 'Enter') {
@@ -864,7 +946,7 @@
       });
 
       // =============================================
-      // TERMINAL INPUT (preserved + sounds)
+      // TERMINAL INPUT
       // =============================================
       const playKeySound = _.debounce(() => playUISound('click'), 60, { leading: true, trailing: false });
       document.getElementById('termInput').addEventListener('keydown', playKeySound);
@@ -889,18 +971,17 @@
       });
 
       // =============================================
-      // AMBIENT FLOATING SHAPES (subtle depth)
+      // AMBIENT SHAPES
       // =============================================
       function spawnAmbientShape() {
         const shape = document.createElement('div');
         shape.className = 'ambient-shape';
         const size = 4 + Math.random() * 8;
-        const x = Math.random() * window.innerWidth;
-        const y = window.innerHeight - 50 + Math.random() * 80;
         const colors = ['rgba(103,232,249,0.3)', 'rgba(167,139,250,0.3)', 'rgba(251,113,133,0.2)'];
         shape.style.cssText = `
           width: ${size}px; height: ${size}px;
-          left: ${x}px; top: ${y}px;
+          left: ${Math.random() * window.innerWidth}px;
+          top: ${window.innerHeight - 50 + Math.random() * 80}px;
           background: ${colors[Math.floor(Math.random() * colors.length)]};
           animation-duration: ${6 + Math.random() * 6}s;
           animation-delay: ${Math.random() * 2}s;
@@ -908,12 +989,8 @@
         document.body.appendChild(shape);
         setTimeout(() => shape.remove(), 14000);
       }
-
-      // Spawn shapes periodically
       setInterval(spawnAmbientShape, 3000);
-      // Initial batch
       for (let i = 0; i < 3; i++) setTimeout(spawnAmbientShape, i * 800);
-
     </script>
   </body>
 </html>
